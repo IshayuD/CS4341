@@ -1,10 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <head>
-    <meta charset="UTF-8" />
-  </head>
-  <body>
-    <h2>Start of project</h2>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered NBA Player Acquisition</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="./scripts.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <center>
+    <h1 class="title">
+      Strategic Roster Optimization<br />
+      Al-Powered Player Acquisition for NBA Teams
+    </h1>
+    <table>
+      <tr>
+        <th>
+          <h2 style="margin: 0px;">Player List</h2>
+        </th>
+        <th>
+          <h2 style="margin: 0px;">Current Lineup</h2>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div id="searchBar">
+            <label for="searchInput">Search: </label>
+            <input type="text" id="searchInput" oninput="search()">
+          </div>
+
+          <div id="tableContainer">
+            <table id="dataTable" class="dataTable"></table>
+          </div>
+          <br />
+          <center>
+            <a><button class="button" onclick="saveSelectedRows()">Save</button></a>
+            <a><button class="button" onclick="clearBlob()">Clear</button></a>
+          </center>
+        </th>
+        <th>
+          <h3>Starting</h3>
+          <div id="blobTableContainer">
+            <table id="blobTable">
+            </table>
+          </div>
+          <br />
+          <h3>Lineup Stats</h3>
+          <div id="statTableContainer">
+            <table id="statTable">
+            </table>
+          </div>
+        </th>
+      </tr>
+    </table>
+    <div>
+      <h2>Recommended Players</h2>
+      <div id="recommendedContainer">
+        <table id="recommendedTable">
+        </table>
+      </div>
+    </div>
+  </center>
+</body>
+
 </html>
