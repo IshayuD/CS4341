@@ -4,8 +4,7 @@ from teamutils import all_averages
 
 class Team:
     def __init__(self, team_id: int, name: str, player_count: int, cap_space: float,
-                 point_avg: float, assist_avg: float, rebound_avg: float, steal_avg: float,
-                 block_avg: float, turnover_avg: float) -> None:
+                 point_avg: float, assist_avg: float, steal_avg: float, block_avg: float) -> None:
         """
         :param team_id: The team's ID
         :param name: The team name
@@ -13,10 +12,8 @@ class Team:
         :param cap_space: The salary cap of the team in US dollars
         :param point_avg: The average points on the team
         :param assist_avg: The average assists on the team
-        :param rebound_avg: The rebound average on the team
         :param steal_avg: The average steals on the team
         :param block_avg: The average blocks on the team
-        :param turnover_avg: The average turnovers on the team
         """
         self.team_id = team_id
         self.name = name
@@ -24,10 +21,8 @@ class Team:
         self.cap_space = cap_space
         self.point_avg = point_avg
         self.assist_avg = assist_avg
-        self.rebound_avg = rebound_avg
         self.steal_avg = steal_avg
         self.block_avg = block_avg
-        self.turnover_avg = turnover_avg
 
         self.players = None
         self.initialize_values()
