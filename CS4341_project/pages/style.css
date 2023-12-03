@@ -10,6 +10,8 @@
     padding-top: 20px;
     margin-bottom: 20px;
     padding-bottom: 20px;
+    position: sticky;
+    top: 0;
     text-transform: uppercase;
     background-color: #242423;
 }
@@ -27,15 +29,14 @@
     width: auto;
 }
 
-.toprow {
+#dataTable thead{
     position: sticky;
     top: 0;
     background-color: #242423;
+    color: #f5cb5c;
 }
 
-.tr,
-td,
-th {
+.tr, td, th{
     padding: 8px;
     text-align: left;
     /* border: 1px solid black; */
@@ -73,7 +74,7 @@ th {
 }
 
 tr.selected {
-    background-color: #242423;
+    background-color: #333533;
     color: #f5cb5c;
 }
 

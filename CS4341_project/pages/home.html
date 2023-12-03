@@ -19,10 +19,10 @@
     <table>
       <tr>
         <th>
-          <h2>Player List</h2>
+          <h2 style="margin: 0px;">Player List</h2>
         </th>
         <th>
-          <h2>Current Lineup</h2>
+          <h2 style="margin: 0px;">Current Lineup</h2>
         </th>
       </tr>
       <tr>
@@ -33,11 +33,13 @@
           </div>
 
           <div id="tableContainer">
-            <table id="dataTable"></table>
+            <table id="dataTable" class="dataTable"></table>
           </div>
-          <br/>
-          <a><button class="button" onclick="saveSelectedRows()">Save</button></a>
-          <a><button class="button" onclick="clearBlob()">Clear</button></a>
+          <br />
+          <center>
+            <a><button class="button" onclick="saveSelectedRows()">Save</button></a>
+            <a><button class="button" onclick="clearBlob()">Clear</button></a>
+          </center>
         </th>
         <th>
           <h3>Starting</h3>

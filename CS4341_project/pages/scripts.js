@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let originalData; // Variable to store the original CSV data
-    let selectedRowsData = []; // Variable to store selected rows
-    let blob = null; // Variable to store the Blob
+    let originalData;
+    let selectedRowsData = [];
+    let blob = null;
 
     // Function to handle CSV file
     function handleCSVFile() {
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(csvFilePath)
             .then(response => response.text())
             .then(data => {
-                originalData = data; // Store the original data
+                originalData = data;
                 displayCSVAsTable(data, 'dataTable', onRowClick);
             })
             .catch(error => {
@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const cells = rows[i].split(',');
 
             if (i === 0) {
-                // Create header row
                 const headerRow = document.createElement('tr');
                 for (let j = 0; j < cells.length; j++) {
                     const th = document.createElement('th');
@@ -39,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 table.appendChild(document.createElement('thead')).appendChild(headerRow);
             } else {
-                // Create data rows
                 const dataRow = document.createElement('tr');
                 dataRow.addEventListener('click', () => rowClickCallback(dataRow, cells));
                 
@@ -60,18 +58,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const rowIndex = selectedRowsData.findIndex(row => row.join(',') === rowData.join(','));
 
         if (rowIndex === -1) {
-            // If the row is not already selected and the limit is not reached, add it to the selectedRowsData
             if (selectedRowsData.length < 5) {
                 selectedRowsData.push(rowData);
-                // Toggle a class to visually indicate the selected state
                 rowElement.classList.add('selected');
             } else {
                 alert('You can only select up to 5 players.');
             }
         } else {
-            // If the row is already selected, remove it from the selectedRowsData
             selectedRowsData.splice(rowIndex, 1);
-            // Remove the 'selected' class to visually indicate the deselected state
             rowElement.classList.remove('selected');
         }
     }
@@ -79,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to save selected rows to Blob
     window.saveSelectedRows = function () {
         if (selectedRowsData.length === 0) {
-            alert('No rows selected. Please click on rows to select them.');
+            alert('No players selected. Please click on players to select them.');
             return;
         }
 
@@ -87,9 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Create a Blob containing the selected CSV data
         blob = new Blob([selectedCSVData], { type: 'text/csv' });
-
-        // Display the Blob content as a new table
         displayBlobAsTable(blob, 'blobTable');
+
+        console.log(selectedRowsData);
     };
 
     // Function to clear Blob content and the displayed table
@@ -99,6 +93,8 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedRowsData = [];
         handleCSVFile();
         $("#blobTable tr").remove();
+
+        console.log(selectedRowsData);
     };
 
     // Function to display Blob content as a table
@@ -115,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const cells = rows[i].split(',');
 
                 if (i === 0) {
-                    // Create header row
                     const headerRow = document.createElement('tr');
                     for (let j = 0; j < cells.length; j++) {
                         const th = document.createElement('th');
@@ -124,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     table.appendChild(document.createElement('thead')).appendChild(headerRow);
                 } else {
-                    // Create data rows
                     const dataRow = document.createElement('tr');
                     for (let j = 0; j < cells.length; j++) {
                         const td = document.createElement('td');
