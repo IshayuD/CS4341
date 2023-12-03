@@ -3,7 +3,7 @@ import os
 
 
 def main():
-    file_path = 'pages/home.html'
+    file_path = 'CS4341_project\pages\home.html'
     webbrowser.open_new_tab('file://' + os.path.realpath(file_path))  # Opens HTML file in new tab
 
 
