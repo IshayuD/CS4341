@@ -4,8 +4,7 @@ from teamutils import positions
 class Player:
     def __init__(self, player_id: int, name: str, position: str, height: float, weight: float, age: int,
                  years_of_exp: int, salary: float, current_team: str, point_avg: float,
-                 assist_avg: float, rebound_avg: float, steal_avg: float, block_avg: float,
-                 turnover_avg: float) -> None:
+                 assist_avg: float, steal_avg: float, block_avg: float) -> None:
         """
         :param player_id: The player's ID
         :param name: The player's name
@@ -18,10 +17,8 @@ class Player:
         :param current_team: The player's current team
         :param point_avg: Average number of points per game
         :param assist_avg: Average assists per game
-        :param rebound_avg: Average number of rebounds a game
         :param steal_avg: Average number of steals a game
         :param block_avg: Average number of blocks a game
-        :param turnover_avg: Average number of turnovers a game
         """
         self.player_id = player_id
         self.name = name
@@ -34,10 +31,8 @@ class Player:
         self.current_team = current_team  # Redundant field
         self.point_avg = point_avg
         self.assist_avg = assist_avg
-        self.rebound_avg = rebound_avg
         self.steal_avg = steal_avg
         self.block_avg = block_avg
-        self.turnover_avg = turnover_avg
 
         # No YOE is the same as 0 YOE
         if self.years_of_exp is None:
@@ -66,10 +61,8 @@ class Player:
             ('current_team', lambda x: len(x) <= 0),  # TODO: Will likely cause a bug with remove_player (len(None) = 0)
             ('point_avg', lambda x: x < 0),
             ('assist_avg', lambda x: x < 0),
-            ('rebound_avg', lambda x: x < 0),
             ('steal_avg', lambda x: x < 0),
-            ('block_avg', lambda x: x < 0),
-            ('turnover_avg', lambda x: x < 0),
+            ('block_avg', lambda x: x < 0)
         ]
         valid_player = True
         for attribute, constraint in constraints:
