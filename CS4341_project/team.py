@@ -3,10 +3,9 @@ from teamutils import all_averages
 
 
 class Team:
-    def __init__(self, team_id: int, name: str, player_count: int, cap_space: float,
+    def __init__(self, name: str, player_count: int, cap_space: float,
                  point_avg: float, assist_avg: float, steal_avg: float, block_avg: float) -> None:
         """
-        :param team_id: The team's ID
         :param name: The team name
         :param player_count: Number of players on the team
         :param cap_space: The salary cap of the team in US dollars
@@ -15,7 +14,6 @@ class Team:
         :param steal_avg: The average steals on the team
         :param block_avg: The average blocks on the team
         """
-        self.team_id = team_id
         self.name = name
         self.player_count = player_count
         self.cap_space = cap_space
@@ -26,6 +24,13 @@ class Team:
 
         self.players = None
         self.initialize_values()
+
+    def __str__(self):
+        return self.name + ", " + str(self.players)
+
+    def __repr__(self):
+        return "{" + self.__str__() + "}"
+
 
     def initialize_values(self) -> None:
         """
@@ -82,7 +87,8 @@ class Team:
             raise TooManyPlayersError
 
         # Check if player is on the team.
-        if not self.players.__contains__(player):
+        # if not self.players.__contains__(player):
+        if not self.player_in_players(player):
             # Add player to players
             self.players.append(player)
 
@@ -116,7 +122,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_players(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -139,7 +145,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_players(player):
             raise PlayerNotFoundError
 
         # Update related values (with error handling)
@@ -175,7 +181,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_players(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -191,8 +197,28 @@ class Team:
             updated_avg = (team_avg * (self.player_count + 1) - player_avg) / self.player_count
             setattr(self, avg, updated_avg)
 
+    def player_in_players(self, player: Player) -> bool:
+        """
+        :param player: The player to check if it is in players
+        :return: True if the player is in players
+        """
+        return any(player == p for p in self.players)
+
 
 class TooManyPlayersError(Exception):
     def __init__(self, message="Too many players!"):
         self.message = message
+        super().__init__(self.message)
+
+
+class TeamNotFoundError(Exception):
+    def __init__(self, message="The team was not found!", team=None):
+        self.team = team
+        self.message = message
+        if team is not None:
+            if type(team) is Team:
+                self.message = "The team, " + team.name + ", was not found!"
+            elif type(team) is str:
+                self.message = "The team, " + team + ", was not found!"
+
         super().__init__(self.message)
