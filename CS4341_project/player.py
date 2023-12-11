@@ -1,4 +1,4 @@
-from teamutils import positions, is_valid_position
+from teamutils import is_valid_position
 
 
 class Player:

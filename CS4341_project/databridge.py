@@ -2,7 +2,6 @@ import numpy
 
 import teammanager
 from player import Player
-from team import Team, TooManyPlayersError
 
 
 # This class is the bridge between the data and the python code.

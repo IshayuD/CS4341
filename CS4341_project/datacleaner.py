@@ -8,7 +8,7 @@ player_names = []  # A set of all players that have been looked at
 def clean_data(data: numpy.recarray) -> list[numpy.record]:
     """
     :param data: The data to remove duplicate players from
-    :return: a recarray with no duplicate players
+    :return: a list of records with no duplicate players
     """
     cleaned_data = []
 
@@ -28,6 +28,7 @@ def clean_data(data: numpy.recarray) -> list[numpy.record]:
             continue
 
         get_overall_averages(player_data)
+
         # Add player name to list of already done players
         player_names.append(player.__getitem__(1))
 
