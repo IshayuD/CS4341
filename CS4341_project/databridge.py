@@ -1,15 +1,17 @@
 import numpy
+
+import teammanager
 from player import Player
-from home import is_existing_team, add_team, get_team, print_teams
-from team import Team
+from team import Team, TooManyPlayersError
 
 
 # This class is the bridge between the data and the python code.
 
-def create_players_from_data(data: list[numpy.record]) -> list[Player]:
+def create_players_from_data(data: list[numpy.record], team_manager: teammanager.TeamManager) -> list[Player]:
     """
     Creates instances of Player from the data. Use datacleaner.clean_data() before creating players.
     :param data: The data from datacleaner.clean_data() to create players from.
+    :param team_manager: The TeamManager to update with the new players
     :return: A list of Player instances.
     """
     players = []
@@ -33,18 +35,5 @@ def create_players_from_data(data: list[numpy.record]) -> list[Player]:
 
         # Add player to list of players
         players.append(new_player)
-
-        if is_existing_team(current_team):
-            # Add to existing team
-            new_team = get_team(current_team)
-            new_team.add_player(new_player)
-            continue
-
-        # Create team
-        new_team = Team(name=current_team, player_count=0, cap_space=0, point_avg=0, assist_avg=0, steal_avg=0,
-                        block_avg=0)
-        new_team.add_player(new_player)
-
-        # Add team
-        add_team(new_team)
+        team_manager.update_teams(new_player=new_player, current_team=current_team)
     return players

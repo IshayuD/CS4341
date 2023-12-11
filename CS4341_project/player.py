@@ -1,4 +1,4 @@
-from teamutils import positions
+from teamutils import positions, is_valid_position
 
 
 class Player:
@@ -43,7 +43,7 @@ class Player:
         """
         constraints = [
             ('name', lambda x: len(x) <= 0 or x is None),
-            ('position', lambda x: len(x) <= 0 or x is None or not positions.__contains__(x)),
+            ('position', lambda x: len(x) <= 0 or x is None or not is_valid_position(x)),
             ('age', lambda x: x < 19 or x > 50),
             ('games', lambda x: x < 0),
             ('games_started', lambda x: x < 0),
@@ -62,11 +62,18 @@ class Player:
                 break
         return valid_player
 
-    def __str__(self):
+    def __str__(self) -> str:
+        if self.current_team is None:
+            return self.name + ", NO TEAM"
         return self.name + ", " + self.current_team
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{" + self.__str__() + "}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Player):
+            return False
+        return self.name.__eq__(other.name)
 
 
 class InvalidPlayerError(Exception):

@@ -25,12 +25,18 @@ class Team:
         self.players = None
         self.initialize_values()
 
-    def __str__(self):
+    def __str__(self) -> str:
+        if self.players is None:
+            return self.name + ", NO PLAYERS"
         return self.name + ", " + str(self.players)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{" + self.__str__() + "}"
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Team):
+            return False
+        return self.name.__eq__(other.name)
 
     def initialize_values(self) -> None:
         """
@@ -88,7 +94,7 @@ class Team:
 
         # Check if player is on the team.
         # if not self.players.__contains__(player):
-        if not self.player_in_players(player):
+        if not self.player_in_team(player):
             # Add player to players
             self.players.append(player)
 
@@ -122,7 +128,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.player_in_players(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -145,7 +151,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.player_in_players(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update related values (with error handling)
@@ -181,7 +187,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.player_in_players(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -197,12 +203,12 @@ class Team:
             updated_avg = (team_avg * (self.player_count + 1) - player_avg) / self.player_count
             setattr(self, avg, updated_avg)
 
-    def player_in_players(self, player: Player) -> bool:
+    def player_in_team(self, player: Player) -> bool:
         """
         :param player: The player to check if it is in players
         :return: True if the player is in players
         """
-        return any(player == p for p in self.players)
+        return any(player.__eq__(p) for p in self.players)
 
 
 class TooManyPlayersError(Exception):
