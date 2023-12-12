@@ -3,12 +3,11 @@ from teamutils import all_averages
 
 
 class Team:
-    def __init__(self, name: str, player_count: int, cap_space: float,
-                 point_avg: float, assist_avg: float, steal_avg: float, block_avg: float) -> None:
+    def __init__(self, name: str, player_count: int, point_avg: float, assist_avg: float, steal_avg: float,
+                 block_avg: float) -> None:
         """
         :param name: The team name
         :param player_count: Number of players on the team
-        :param cap_space: The salary cap of the team in US dollars
         :param point_avg: The average points on the team
         :param assist_avg: The average assists on the team
         :param steal_avg: The average steals on the team
@@ -16,7 +15,6 @@ class Team:
         """
         self.name = name
         self.player_count = player_count
-        self.cap_space = cap_space
         self.point_avg = point_avg
         self.assist_avg = assist_avg
         self.steal_avg = steal_avg
@@ -42,17 +40,12 @@ class Team:
         """
         Initializes the values of the team.
         player_count = 0
-        cap_space = 0
         all averages = 0
         :return:
         """
         # Initialize player count to 0
         if self.player_count is None:
             self.player_count = 0
-
-        # Initialize cap space to 0
-        if self.cap_space is None:
-            self.cap_space = 0
 
         # Initialize all the averages to 0
         for avg in all_averages:
@@ -70,13 +63,6 @@ class Team:
         """
         # TODO: Implement this.
         raise NotImplementedError
-
-    def increase_cap(self, amount) -> None:
-        """
-        Increases the cap by the provided amount
-        :param amount: The amount to increase the cap by
-        """
-        self.cap_space = self.cap_space + amount
 
     def add_player(self, player: Player) -> None:
         """

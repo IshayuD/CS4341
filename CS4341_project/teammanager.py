@@ -59,7 +59,7 @@ class TeamManager:
             return
 
         # Create team
-        new_team = Team(name=current_team, player_count=0, cap_space=0, point_avg=0, assist_avg=0, steal_avg=0,
+        new_team = Team(name=current_team, player_count=0, point_avg=0, assist_avg=0, steal_avg=0,
                         block_avg=0)
         # Add team
         self.add_team(new_team)
