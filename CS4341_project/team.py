@@ -3,22 +3,18 @@ from teamutils import all_averages
 
 
 class Team:
-    def __init__(self, team_id: int, name: str, player_count: int, cap_space: float,
-                 point_avg: float, assist_avg: float, steal_avg: float, block_avg: float) -> None:
+    def __init__(self, name: str, player_count: int, point_avg: float, assist_avg: float, steal_avg: float,
+                 block_avg: float) -> None:
         """
-        :param team_id: The team's ID
         :param name: The team name
         :param player_count: Number of players on the team
-        :param cap_space: The salary cap of the team in US dollars
         :param point_avg: The average points on the team
         :param assist_avg: The average assists on the team
         :param steal_avg: The average steals on the team
         :param block_avg: The average blocks on the team
         """
-        self.team_id = team_id
         self.name = name
         self.player_count = player_count
-        self.cap_space = cap_space
         self.point_avg = point_avg
         self.assist_avg = assist_avg
         self.steal_avg = steal_avg
@@ -27,21 +23,29 @@ class Team:
         self.players = None
         self.initialize_values()
 
+    def __str__(self) -> str:
+        if self.players is None:
+            return self.name + ", NO PLAYERS"
+        return self.name + ", " + str(self.players)
+
+    def __repr__(self) -> str:
+        return "{" + self.__str__() + "}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Team):
+            return False
+        return self.name.__eq__(other.name)
+
     def initialize_values(self) -> None:
         """
         Initializes the values of the team.
         player_count = 0
-        cap_space = 0
         all averages = 0
         :return:
         """
         # Initialize player count to 0
         if self.player_count is None:
             self.player_count = 0
-
-        # Initialize cap space to 0
-        if self.cap_space is None:
-            self.cap_space = 0
 
         # Initialize all the averages to 0
         for avg in all_averages:
@@ -60,13 +64,6 @@ class Team:
         # TODO: Implement this.
         raise NotImplementedError
 
-    def increase_cap(self, amount) -> None:
-        """
-        Increases the cap by the provided amount
-        :param amount: The amount to increase the cap by
-        """
-        self.cap_space = self.cap_space + amount
-
     def add_player(self, player: Player) -> None:
         """
         Adds a player to the team if player_count is less than 17
@@ -82,7 +79,7 @@ class Team:
             raise TooManyPlayersError
 
         # Check if player is on the team.
-        if not self.players.__contains__(player):
+        if not self.player_in_team(player):
             # Add player to players
             self.players.append(player)
 
@@ -116,7 +113,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -139,7 +136,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update related values (with error handling)
@@ -175,7 +172,7 @@ class Team:
             raise InvalidPlayerError
 
         # Check that player is on team
-        if not self.players.__contains__(player):
+        if not self.player_in_team(player):
             raise PlayerNotFoundError
 
         # Update all averages
@@ -191,8 +188,60 @@ class Team:
             updated_avg = (team_avg * (self.player_count + 1) - player_avg) / self.player_count
             setattr(self, avg, updated_avg)
 
+    def player_in_team(self, player: Player) -> bool:
+        """
+        :param player: The player to check if it is in players
+        :return: True if the player is in players
+        """
+        # One-liner that sees if player is inside of self.players
+        # Uses Player.__eq__() to compare two players
+        return any(player.__eq__(p) for p in self.players)
+
+    def is_valid_team(self) -> bool:
+        """
+        A function for determining if a team fits all constraints.\n
+        Must be greater than 0: age, all averages\n
+        Can be None: all averages
+        :rtype: bool
+        :returns: True if the player fits all constraints
+        """
+        constraints = [
+            ('name', lambda x: len(x) <= 0 or x is None),
+            ('player_count', lambda x: x < 0 or x is None),
+            ('point_avg', lambda x: x < 0),
+            ('assist_avg', lambda x: x < 0),
+            ('steal_avg', lambda x: x < 0),
+            ('block_avg', lambda x: x < 0)
+        ]
+        valid_team = True
+        for attribute, constraint in constraints:
+            value = getattr(self, attribute)
+            if constraint(value):
+                valid_team = False
+                break
+        return valid_team
+
 
 class TooManyPlayersError(Exception):
     def __init__(self, message="Too many players!"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class TeamNotFoundError(Exception):
+    def __init__(self, message="The team was not found!", team=None):
+        self.team = team
+        self.message = message
+        if team is not None:
+            if type(team) is Team:
+                self.message = "The team, " + team.name + ", was not found!"
+            elif type(team) is str:
+                self.message = "The team, " + team + ", was not found!"
+
+        super().__init__(self.message)
+
+
+class InvalidTeamError(Exception):
+    def __init__(self, message="An invalid team was provided!"):
         self.message = message
         super().__init__(self.message)
