@@ -79,7 +79,6 @@ class Team:
             raise TooManyPlayersError
 
         # Check if player is on the team.
-        # if not self.players.__contains__(player):
         if not self.player_in_team(player):
             # Add player to players
             self.players.append(player)
@@ -194,7 +193,33 @@ class Team:
         :param player: The player to check if it is in players
         :return: True if the player is in players
         """
+        # One-liner that sees if player is inside of self.players
+        # Uses Player.__eq__() to compare two players
         return any(player.__eq__(p) for p in self.players)
+
+    def is_valid_team(self) -> bool:
+        """
+        A function for determining if a team fits all constraints.\n
+        Must be greater than 0: age, all averages\n
+        Can be None: all averages
+        :rtype: bool
+        :returns: True if the player fits all constraints
+        """
+        constraints = [
+            ('name', lambda x: len(x) <= 0 or x is None),
+            ('player_count', lambda x: x < 0 or x is None),
+            ('point_avg', lambda x: x < 0),
+            ('assist_avg', lambda x: x < 0),
+            ('steal_avg', lambda x: x < 0),
+            ('block_avg', lambda x: x < 0)
+        ]
+        valid_team = True
+        for attribute, constraint in constraints:
+            value = getattr(self, attribute)
+            if constraint(value):
+                valid_team = False
+                break
+        return valid_team
 
 
 class TooManyPlayersError(Exception):
@@ -213,4 +238,10 @@ class TeamNotFoundError(Exception):
             elif type(team) is str:
                 self.message = "The team, " + team + ", was not found!"
 
+        super().__init__(self.message)
+
+
+class InvalidTeamError(Exception):
+    def __init__(self, message="An invalid team was provided!"):
+        self.message = message
         super().__init__(self.message)

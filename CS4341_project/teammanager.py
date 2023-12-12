@@ -16,7 +16,7 @@ class TeamManager:
         :raises TeamExistsError: Raised if the team already exists
         """
         if self.is_existing_team(team):
-            raise TeamExistsError(team=team)
+            raise TeamAlreadyExistsError(team=team)
         self.teams.append(team)
 
     def is_existing_team(self, team: Team | str) -> bool:
@@ -25,11 +25,13 @@ class TeamManager:
         :param team: The team to check
         :return: True if the team is already in the teams list, False otherwise
         """
+        # team is a str
         if type(team) is str:
             for team_inst in self.teams:
                 if team_inst.name == team:
                     return True
             return False
+        # team is a Team
         return any(team.__eq__(t) for t in self.teams)
 
     def get_team(self, team_name: str) -> Team:
@@ -55,6 +57,7 @@ class TeamManager:
             try:
                 new_team.add_player(new_player)
             except TooManyPlayersError:
+                # If there are too many players on a team, set the incoming player's current_team to None
                 new_player.__setattr__('current_team', None)
             return
 
@@ -72,7 +75,7 @@ class TeamManager:
         print(*self.teams)
 
 
-class TeamExistsError(Exception):
+class TeamAlreadyExistsError(Exception):
     def __init__(self, message="The team already exists!", team=None):
         self.team = team
         self.message = message

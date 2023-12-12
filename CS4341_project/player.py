@@ -48,7 +48,7 @@ class Player:
             ('games', lambda x: x < 0),
             ('games_started', lambda x: x < 0),
             ('minutes_played', lambda x: x < 0 or x > 500),
-            ('current_team', lambda x: len(x) <= 0),  # TODO: Will likely cause a bug with remove_player (len(None) = 0)
+            ('current_team', lambda x: len(x) <= 0),  # Will likely cause a bug with remove_player (len(None) = 0)
             ('point_avg', lambda x: x < 0),
             ('assist_avg', lambda x: x < 0),
             ('steal_avg', lambda x: x < 0),
