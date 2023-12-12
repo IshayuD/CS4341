@@ -1,4 +1,6 @@
+import webbrowser
 import os
+from flask import Flask, jsonify, redirect, render_template
 import webbrowser
 
 import databridge
@@ -6,6 +8,7 @@ import datacleaner
 import datagrabber
 from teammanager import TeamManager
 
+app = Flask(__name__)
 
 def main():
     # UI
