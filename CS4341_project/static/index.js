@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleCSVFile() {
         // Path to your CSV file
         const csvFilePath = '../data/NBA_Player_Stats.csv';
+        console.log(csvFilePath);
 
         // Use Fetch API to fetch the CSV file
         fetch(csvFilePath)
