@@ -83,7 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
         blob = new Blob([selectedCSVData], { type: 'text/csv' });
         displayBlobAsTable(blob, 'blobTable');
 
-        console.log(selectedRowsData);
+        //Calculate averages from the blob table
+        //computeColumnAverage(1);
     };
 
     // Function to clear Blob content and the displayed table
@@ -93,8 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedRowsData = [];
         handleCSVFile();
         $("#blobTable tr").remove();
-
-        console.log(selectedRowsData);
     };
 
     // Function to display Blob content as a table
@@ -168,3 +167,38 @@ document.addEventListener("DOMContentLoaded", function () {
     // Call handleCSVFile when the document is ready
     handleCSVFile();
 });
+
+// Function to compute the average of a particular column in the starting lineup table
+function computeColumnAverage(columnIndex) {
+    const table = document.getElementById('blobTable');
+
+    if (!table) {
+        console.error('Table not found.');
+        return;
+    }
+
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = tbody.getElementsByTagName('tr');
+    let sum = 0;
+    let count = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        
+        if (cells.length > columnIndex) {
+            const cellValue = parseFloat(cells[columnIndex].textContent);
+            
+            if (!isNaN(cellValue)) {
+                sum += cellValue;
+                count++;
+            }
+        }
+    }
+
+    if (count === 0) {
+        console.log('No valid values found in the column.');
+    } else {
+        const average = sum / count;
+        console.log(`Average of column ${columnIndex}: ${average.toFixed(2)}`);
+    }
+}
