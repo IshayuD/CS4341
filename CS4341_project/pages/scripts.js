@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to handle CSV file
     function handleCSVFile() {
-        // Adjust the path to your CSV file based on your project structure
+        // Path to your CSV file
         const csvFilePath = '../data/NBA_Player_Stats.csv';
 
         // Use Fetch API to fetch the CSV file
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const dataRow = document.createElement('tr');
                 dataRow.addEventListener('click', () => rowClickCallback(dataRow, cells));
-                
+
                 for (let j = 0; j < cells.length; j++) {
                     const td = document.createElement('td');
                     td.textContent = cells[j];
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
         displayBlobAsTable(blob, 'blobTable');
 
         //Calculate averages from the blob table
-        //computeColumnAverage(1);
+        computeColumnAverage();
     };
 
     // Function to clear Blob content and the displayed table
@@ -96,39 +96,58 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#blobTable tr").remove();
     };
 
-    // Function to display Blob content as a table
-    function displayBlobAsTable(blob, tableId) {
+    // Function to display Blob content as a table with a fixed header
+    function displayBlobAsTable(blob, tableId, headerTableId = 'dataTable') {
         const reader = new FileReader();
 
         reader.onload = function () {
             const blobContent = reader.result;
+
             const rows = blobContent.split('\n');
             const table = document.createElement('table');
             table.id = tableId;
 
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].split(',');
+            let headerRow = null;
+            let headerIndices = [];
 
-                if (i === 0) {
-                    const headerRow = document.createElement('tr');
-                    for (let j = 0; j < cells.length; j++) {
-                        const th = document.createElement('th');
-                        th.textContent = cells[j];
-                        headerRow.appendChild(th);
-                    }
-                    table.appendChild(document.createElement('thead')).appendChild(headerRow);
-                } else {
-                    const dataRow = document.createElement('tr');
-                    for (let j = 0; j < cells.length; j++) {
-                        const td = document.createElement('td');
-                        td.textContent = cells[j];
-                        dataRow.appendChild(td);
-                    }
-                    table.appendChild(dataRow);
+            const headerTable = document.getElementById(headerTableId);
+            if (headerTable) {
+                // Use the header row from the specified header table
+                const headerCells = headerTable.getElementsByTagName('th');
+                headerRow = document.createElement('tr');
+                for (let j = 0; j < headerCells.length; j++) {
+                    const th = document.createElement('th');
+                    th.textContent = headerCells[j].textContent;
+                    headerRow.appendChild(th);
+                    headerIndices.push(j);
                 }
             }
 
-            document.getElementById(tableId).replaceWith(table);
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].split(',');
+
+                // Create data rows
+                const dataRow = document.createElement('tr');
+                for (let j = 0; j < cells.length; j++) {
+                    if (headerIndices.includes(j)) {
+                        const td = document.createElement('td');
+                        td.setAttribute('class', 'blob_col' + (j + 1));
+                        td.textContent = cells[j];
+                        dataRow.appendChild(td);
+                    }
+                }
+                table.appendChild(dataRow);
+            }
+
+            // Append the header row to the thead section of the table
+            table.appendChild(document.createElement('thead')).appendChild(headerRow);
+
+            const existingTable = document.getElementById(tableId);
+            if (existingTable) {
+                existingTable.replaceWith(table);
+            } else {
+                document.body.appendChild(table);
+            }
         };
 
         if (blob) {
@@ -139,16 +158,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+
     // Function to search for rows based on user input
-    window.search = function() {
+    window.search = function () {
         const input = $('#searchInput').val().toLowerCase();
         const rows = $('#dataTable tr').slice(1); // Exclude header row
 
-        rows.each(function() {
+        rows.each(function () {
             const cells = $(this).find('td');
             let found = false;
 
-            cells.each(function() {
+            cells.each(function () {
                 const cellText = $(this).text().toLowerCase();
                 if (cellText.includes(input)) {
                     found = true;
@@ -168,8 +188,9 @@ document.addEventListener("DOMContentLoaded", function () {
     handleCSVFile();
 });
 
-// Function to compute the average of a particular column in the starting lineup table
-function computeColumnAverage(columnIndex) {
+// Function to compute the average of a particular columns in the starting lineup table
+function computeColumnAverage() {
+    const columnIndexes = [5, 1, 6, 7, 8]; // PTS - Rk - AST - STL - BLK
     const table = document.getElementById('blobTable');
 
     if (!table) {
@@ -177,28 +198,29 @@ function computeColumnAverage(columnIndex) {
         return;
     }
 
-    const tbody = table.getElementsByTagName('tbody')[0];
-    const rows = tbody.getElementsByTagName('tr');
-    let sum = 0;
-    let count = 0;
+    columnIndexes.forEach(columnIndex => {
+        var array = [];
+        var collection = table.getElementsByClassName('blob_col' + columnIndex);
 
-    for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        
-        if (cells.length > columnIndex) {
-            const cellValue = parseFloat(cells[columnIndex].textContent);
-            
-            if (!isNaN(cellValue)) {
-                sum += cellValue;
-                count++;
-            }
+        for (let i = 0; i < collection.length; i++) {
+            array.push(collection[i].textContent);
         }
-    }
 
-    if (count === 0) {
-        console.log('No valid values found in the column.');
-    } else {
-        const average = sum / count;
-        console.log(`Average of column ${columnIndex}: ${average.toFixed(2)}`);
-    }
+        var sum = 0;
+        var count = 0;
+        var average = 0;
+        
+        array.forEach(element => {
+            var num = Number(element);
+            sum += num;
+            count++;
+        });
+        average = (sum/count).toFixed(2);
+
+        if (count === 0) {
+            console.log('No valid values found in the column.');
+        } else {
+            document.getElementById('avg_'+columnIndex).textContent = average.toString();
+        }
+    });
 }
