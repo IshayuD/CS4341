@@ -3,26 +3,22 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedRowsData = [];
     let blob = null;
 
-    // Function to handle CSV file
-    function handleCSVFile() {
-        // Path to your CSV file
-        const csvFilePath = '../data/NBA_Player_Stats.csv';
-        console.log(csvFilePath);
+    // Call displayCSVAsTable when the document is ready
+    displayCSVAsTable();
 
-        // Use Fetch API to fetch the CSV file
-        fetch(csvFilePath)
+    function displayCSVAsTable() {
+        fetch('/get_csv')
             .then(response => response.text())
-            .then(data => {
-                originalData = data;
-                displayCSVAsTable(data, 'dataTable', onRowClick);
+            .then(csv => {
+                // Parse and display the CSV data as a table
+                parseAndDisplayCSV(csv, 'dataTable', onRowClick);
             })
-            .catch(error => {
-                console.error('Error reading the CSV file:', error);
-            });
+            .catch(error => console.error('Error fetching CSV:', error));
     }
 
-    // Function to display CSV as HTML table
-    function displayCSVAsTable(csv, tableId, rowClickCallback) {
+    // Function to parse CSV and display as table
+    // Function to parse CSV and display as table with row click
+    function parseAndDisplayCSV(csv, tableId, onRowClick) {
         const rows = csv.split('\n');
         const table = document.createElement('table');
         table.id = tableId;
@@ -30,29 +26,34 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < rows.length; i++) {
             const cells = rows[i].split(',');
 
-            if (i === 0) {
-                const headerRow = document.createElement('tr');
-                for (let j = 0; j < cells.length; j++) {
-                    const th = document.createElement('th');
-                    th.textContent = cells[j];
-                    headerRow.appendChild(th);
-                }
-                table.appendChild(document.createElement('thead')).appendChild(headerRow);
-            } else {
-                const dataRow = document.createElement('tr');
-                dataRow.addEventListener('click', () => rowClickCallback(dataRow, cells));
+            // Create header row
+            const row = document.createElement(i === 0 ? 'thead' : 'tr');
 
-                for (let j = 0; j < cells.length; j++) {
-                    const td = document.createElement('td');
-                    td.textContent = cells[j];
-                    dataRow.appendChild(td);
-                }
-                table.appendChild(dataRow);
+            for (let j = 0; j < cells.length; j++) {
+                const cellType = i === 0 ? 'th' : 'td';
+                const cell = document.createElement(cellType);
+                cell.textContent = cells[j];
+                row.appendChild(cell);
             }
+
+            // Add event listener for row click
+            if (i > 0 && typeof onRowClick === 'function') {
+                row.addEventListener('click', function () {
+                    onRowClick(row, cells);
+                });
+            }
+
+            table.appendChild(row);
         }
 
-        document.getElementById(tableId).replaceWith(table);
+        const existingTable = document.getElementById(tableId);
+        if (existingTable) {
+            existingTable.replaceWith(table);
+        } else {
+            document.body.appendChild(table);
+        }
     }
+
 
     // Function to handle row click
     function onRowClick(rowElement, rowData) {
@@ -77,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert('No players selected. Please click on players to select them.');
             return;
         }
-
         const selectedCSVData = selectedRowsData.map(row => row.join(',')).join('\n');
 
         // Create a Blob containing the selected CSV data
@@ -86,6 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //Calculate averages from the blob table
         computeColumnAverage();
+
+        //Sends blob as a JSON to /save_json
+        sendTableAsJSON();
     };
 
     // Function to clear Blob content and the displayed table
@@ -93,8 +96,10 @@ document.addEventListener("DOMContentLoaded", function () {
         blob = null;
         // Clear the displayed table
         selectedRowsData = [];
-        handleCSVFile();
+        displayCSVAsTable();
         $("#blobTable tr").remove();
+        Array.from(document.getElementsByClassName("curr_avg_stat")).forEach(element =>
+            element.innerHTML = "");
     };
 
     // Function to display Blob content as a table with a fixed header
@@ -185,43 +190,73 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
-    // Call handleCSVFile when the document is ready
-    handleCSVFile();
-});
+    // Function to compute the average of a particular columns in the starting lineup table
+    function computeColumnAverage() {
 
-// Function to compute the average of a particular columns in the starting lineup table
-function computeColumnAverage() {
-    const columnIndexes = [5, 1, 6, 7, 8]; // PTS - Rk - AST - STL - BLK
-    const table = document.getElementById('blobTable');
+        const columnIndexes = [5, 1, 6, 7, 8]; // PTS - Rk - AST - STL - BLK
+        const table = document.getElementById('blobTable');
 
-    if (!table) {
-        console.error('Table not found.');
-        return;
+        if (!table) {
+            console.error('Table not found.');
+            return;
+        }
+
+        columnIndexes.forEach(columnIndex => {
+            var array = [];
+            var collection = table.getElementsByClassName('blob_col' + columnIndex);
+
+            for (let i = 0; i < collection.length; i++) {
+                array.push(collection[i].textContent);
+            }
+
+            var sum = 0;
+            var count = 0;
+            var average = 0;
+
+            array.forEach(element => {
+                var num = Number(element);
+                sum += num;
+                count++;
+            });
+            average = (sum / count).toFixed(2);
+
+            if (count === 0) {
+                console.log('No valid values found in the column.');
+            } else {
+                document.getElementById('avg_' + columnIndex).textContent = average.toString();
+            }
+        });
     }
 
-    columnIndexes.forEach(columnIndex => {
-        var array = [];
-        var collection = table.getElementsByClassName('blob_col' + columnIndex);
+    // Function to send elements with class "blob_col2" as a JSON file to Flask
+    function sendTableAsJSON() {
+        const elements = document.getElementsByClassName('blob_col2');
 
-        for (let i = 0; i < collection.length; i++) {
-            array.push(collection[i].textContent);
+        const jsonData = [];
+
+        for (let i = 0; i < elements.length; i++) {
+            const playerValue = elements[i].textContent;
+
+            const rowData = {
+                Player: playerValue
+            };
+
+            jsonData.push(rowData);
         }
+        console.log(jsonData);
 
-        var sum = 0;
-        var count = 0;
-        var average = 0;
-        
-        array.forEach(element => {
-            var num = Number(element);
-            sum += num;
-            count++;
-        });
-        average = (sum/count).toFixed(2);
-
-        if (count === 0) {
-            console.log('No valid values found in the column.');
-        } else {
-            document.getElementById('avg_'+columnIndex).textContent = average.toString();
-        }
-    });
-}
+        // Send JSON data to Flask
+        fetch('/save_json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from Flask:', data);
+            })
+            .catch(error => console.error('Error sending JSON to Flask:', error));
+    }
+});
