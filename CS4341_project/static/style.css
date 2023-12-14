@@ -22,14 +22,23 @@
     overflow-y: scroll;
     background-color: #f5cb5c;
     border-radius: 8px;
+    padding: 0 0.5rem;
 }
 
 .table {
     border-collapse: collapse;
     width: auto;
+    border-collapse: collapse;
 }
 
 #dataTable thead{
+    position: sticky;
+    top: 0;
+    background-color: #242423;
+    color: #f5cb5c;
+}
+
+#blobTable thead{
     position: sticky;
     top: 0;
     background-color: #242423;
@@ -59,18 +68,18 @@
     border-radius: 4px;
 }
  
-
 #searchBar {
     margin-bottom: 10px;
     padding: 5px;
 }
 
-#blobTableContainer {
+#blobTableContainer{
     height: 200px;
     min-width: 560px;
     overflow-y: scroll;
     background-color: #f5cb5c;
     border-radius: 8px;
+    padding: 0.5rem;
 }
 
 tr.selected {
@@ -84,6 +93,7 @@ tr.selected {
     overflow-y: scroll;
     background-color: #f5cb5c;
     border-radius: 8px;
+    padding: 0.5rem;
 }
 
 #recommendedContainer {
@@ -93,4 +103,14 @@ tr.selected {
     background-color: #f5cb5c;
     border-radius: 8px;
     margin-bottom: 20px;
+    padding: 0.5rem;
+}
+
+.flex-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.curr_avg_stat {
+    translate: -1rem 0;
 }
