@@ -30,7 +30,6 @@ avg_AST = 3
 avg_STL = 4
 avg_BLK = 5
 
-
 @app.route("/")
 def home():
     return render_template("index.html", avg_PTS = avg_PTS, avg_REB = avg_REB, avg_AST = avg_AST, avg_STL = avg_STL, avg_BLK = avg_BLK)
