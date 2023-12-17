@@ -2,7 +2,6 @@ import webbrowser
 import os
 from flask import Flask, render_template, jsonify, request, send_file
 import webbrowser
-
 import databridge
 import datacleaner
 import datagrabber
@@ -14,7 +13,6 @@ def main():
     # UI
     file_path = 'CS4341_project/pages/home.html'
     webbrowser.open_new_tab('file://' + os.path.realpath(file_path))  # Opens HTML file in new tab
-
 
 tm = TeamManager()
 data_path = 'CS4341_project/data/NBA_Player_Stats.csv'
@@ -30,9 +28,20 @@ avg_AST = 3
 avg_STL = 4
 avg_BLK = 5
 
+# Recommended Players
+recPlayer1 = ""
+recPlayer2 = ""
+recPlayer3 = ""
+recPlayer4 = ""
+
 @app.route("/")
 def home():
-    return render_template("index.html", avg_PTS = avg_PTS, avg_REB = avg_REB, avg_AST = avg_AST, avg_STL = avg_STL, avg_BLK = avg_BLK)
+    return render_template("index.html", 
+                           avg_PTS = avg_PTS, 
+                           avg_REB = avg_REB, 
+                           avg_AST = avg_AST, 
+                           avg_STL = avg_STL, 
+                           avg_BLK = avg_BLK)
 
 @app.route("/get_csv")
 def get_csv():
