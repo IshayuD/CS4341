@@ -23,10 +23,17 @@ player_data = datagrabber.get_player_data(path=data_path)
 cleaned_data = datacleaner.clean_data(player_data)
 players = databridge.create_players_from_data(cleaned_data, tm)
 
+# Stat average values
+avg_PTS = 1
+avg_REB = 2
+avg_AST = 3
+avg_STL = 4
+avg_BLK = 5
+
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", avg_PTS = avg_PTS, avg_REB = avg_REB, avg_AST = avg_AST, avg_STL = avg_STL, avg_BLK = avg_BLK)
 
 @app.route("/get_csv")
 def get_csv():
