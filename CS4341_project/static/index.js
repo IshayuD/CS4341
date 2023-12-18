@@ -89,6 +89,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         //Sends blob as a JSON to /save_json
         sendTableAsJSON();
+
+        // Call the function to display recommended data in the table
+        document.getElementById('recommendedTable').style.display = "block";
+        const collection = document.getElementsByClassName('rec_averages');
+        for(let i = 0; i < collection.length; i++){
+            collection[i].style.display = "block";
+        }
     };
 
     // Function to clear Blob content and the displayed table
@@ -259,4 +266,27 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error sending JSON to Flask:', error));
     }
+
+    // function displayJsonAsTable(jsonData, tableId) {
+    //     var existingTable = document.getElementById(tableId);
+
+    //     // Clear existing content
+    //     existingTable.innerHTML = '';
+
+    //     // Create the header row
+    //     var headerRow = existingTable.insertRow(0);
+    //     for (var key in jsonData[0]) {
+    //         var headerCell = headerRow.insertCell(-1);
+    //         headerCell.textContent = key;
+    //     }
+
+    //     // Populate the table with data
+    //     for (var i = 0; i < jsonData.length; i++) {
+    //         var row = existingTable.insertRow(-1);
+    //         for (var key in jsonData[i]) {
+    //             var cell = row.insertCell(-1);
+    //             cell.textContent = jsonData[i][key];
+    //         }
+    //     }
+    // }
 });
