@@ -91,7 +91,11 @@ document.addEventListener("DOMContentLoaded", function () {
         sendTableAsJSON();
 
         // Call the function to display recommended data in the table
-        displayJsonAsTable(jsonData, 'recommendedTable');
+        document.getElementById('recommendedTable').style.display = "block";
+        const collection = document.getElementsByClassName('rec_averages');
+        for(let i = 0; i < collection.length; i++){
+            collection[i].style.display = "block";
+        }
     };
 
     // Function to clear Blob content and the displayed table

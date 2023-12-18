@@ -1,6 +1,7 @@
 
 # To connect to a SQL Server database and execute a stored procedure in Python using the pyodbc library, you can modify the previous example. Here's an example of how to execute a stored procedure:
 import pyodbc
+import json
 # private const string SqlConnectionString = "Server=database-1.ctok6v46po4w.us-east-1.rds.amazonaws.com,1433;Database=ADETAB_DB;User Id=Admin;Password=MoAdeTab987!;Integrated Security=false;Connect Timeout=3600;";
 # Replace these values with your SQL Server credentials and connection details
 server = 'database-1.ctok6v46po4w.us-east-1.rds.amazonaws.com'
@@ -24,7 +25,14 @@ rows = cursor2.fetchall()
 columns = [column[0] for column in cursor2.description]
 print(columns)
 # Display the data
+edited_row = ''
 for row in rows:
-    print(row)
+    row = str(row)
+    len = len(row)
+    edited_row = row[3:(len-4)]
 cursor2.close()
 connection2.close()
+
+edited_row = "[" + edited_row + "]"
+
+avg_list = json.loads(edited_row)

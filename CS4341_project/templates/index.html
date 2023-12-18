@@ -67,15 +67,15 @@
             <br />
             <h4>Stat Averages after Recommended Players</h4>
             <div class="flex-container">
-              <a>PTS: {{avg_PTS}}</a>
+              <a class="rec_averages" style="display: none;">PTS: {{avg_PTS}}</a>
               <a id="rec_PTS" class="curr_avg_stat"></a>
-              <a>REB: {{avg_REB}}</a>
+              <a class="rec_averages" style="display: none;">REB: {{avg_REB}}</a>
               <a id="rec_REB" class="curr_avg_stat"></a>
-              <a>AST: {{avg_AST}}</a>
+              <a class="rec_averages" style="display: none;"> AST: {{avg_AST}}</a>
               <a id="rec_AST" class="curr_avg_stat"></a>
-              <a>STL: {{avg_STL}}</a>
+              <a class="rec_averages" style="display: none;">STL: {{avg_STL}}</a>
               <a id="rec_STL" class="curr_avg_stat"></a>
-              <a>BLK: {{avg_BLK}}</a>
+              <a class="rec_averages" style="display: none;">BLK: {{avg_BLK}}</a>
               <a id="rec_BLK" class="curr_avg_stat"></a>
             </div>
           </div>
@@ -85,7 +85,7 @@
     <div>
       <h2>Recommended Players</h2>
       <div id="recommendedContainer">
-        <table id="recommendedTable">
+        <table id="recommendedTable" style="display: none;">
           <thead>
               <tr>
                   {% for key in data_list[0].keys() %}

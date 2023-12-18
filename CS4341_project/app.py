@@ -8,6 +8,7 @@ import datacleaner
 import datagrabber
 from teammanager import TeamManager
 import ReturnJSONFromSQL
+import ReturnAVGs
 
 app = Flask(__name__)
 
@@ -25,11 +26,12 @@ cleaned_data = datacleaner.clean_data(player_data)
 players = databridge.create_players_from_data(cleaned_data, tm)
 
 # Stat average values
-avg_PTS = 1
-avg_REB = 2
-avg_AST = 3
-avg_STL = 4
-avg_BLK = 5
+avg_list = ReturnAVGs.avg_list
+avg_PTS = 10.68
+avg_REB = 3.84
+avg_AST = 2.36
+avg_STL = 0.7
+avg_BLK = 0.42
 
 #Recommened Players
 data_list = ReturnJSONFromSQL.data_list
