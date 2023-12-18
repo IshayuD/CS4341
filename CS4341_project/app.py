@@ -2,11 +2,12 @@ import webbrowser
 import os
 from flask import Flask, render_template, jsonify, request, send_file
 import webbrowser
-
+import json
 import databridge
 import datacleaner
 import datagrabber
 from teammanager import TeamManager
+import ReturnJSONFromSQL
 
 app = Flask(__name__)
 
@@ -30,9 +31,20 @@ avg_AST = 3
 avg_STL = 4
 avg_BLK = 5
 
+#Recommened Players
+data_list = ReturnJSONFromSQL.data_list
+#data_json = json.dumps(data_list)
+print(data_list)
+
 @app.route("/")
 def home():
-    return render_template("index.html", avg_PTS = avg_PTS, avg_REB = avg_REB, avg_AST = avg_AST, avg_STL = avg_STL, avg_BLK = avg_BLK)
+    return render_template("index.html", 
+                           avg_PTS = avg_PTS, 
+                           avg_REB = avg_REB, 
+                           avg_AST = avg_AST, 
+                           avg_STL = avg_STL, 
+                           avg_BLK = avg_BLK,
+                           data_list = data_list)
 
 @app.route("/get_csv")
 def get_csv():
@@ -43,7 +55,6 @@ def save_json():
     data = request.is_json
     print('Received JSON data:', data)
     return jsonify({'message': 'JSON data received successfully'})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
